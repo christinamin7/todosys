@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: security
+  datasource:
+    url: jdbc:mysql://localhost:3306/todosys
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  main:
+    allow-bean-definition-overriding: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: christinamin.ucsp@gmail.com
+    password: mlxj pooi tfqg pyjj
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
