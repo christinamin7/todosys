@@ -2,8 +2,11 @@ package chris.project.security.note.entity;
 
 import java.util.Date;
 
+import chris.project.security.note.model.Priority;
 import chris.project.security.user.User;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +33,8 @@ public class Note {
     private Long id;
     private String title;
     private String description;
-    private String priority;
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
     private Date createdAt;
     private Date updatedAt;
 
@@ -51,6 +55,11 @@ public class Note {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = new Date();
+    }
+
+    public void setUserId(Long userId) {
+        this.user = new User();
+        this.user.setId(userId);  // Only set the ID
     }
 
 }

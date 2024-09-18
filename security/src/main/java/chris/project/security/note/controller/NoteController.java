@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import chris.project.security.note.entity.Note;
 import chris.project.security.note.model.NoteModel;
+import chris.project.security.note.model.Priority;
 import chris.project.security.note.service.NoteService;
 import jakarta.validation.Valid;
 
@@ -25,7 +26,7 @@ public class NoteController {
     @Autowired
     private NoteService NoteService;
 
-    @GetMapping("/note/hi")
+    @GetMapping("/note/test")
     public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok("Hello Testing 123");
     }
@@ -47,10 +48,34 @@ public class NoteController {
         return ResponseEntity.ok(NoteService.retrieveById(id));
     }
 
+    @GetMapping("/note/retrieveByDate/{sorting}")
+    public ResponseEntity<?> retrieveByDate(@PathVariable("sorting") String sorting) {
+        if (sorting.equalsIgnoreCase("desc")) {
+            return ResponseEntity.ok(NoteService.retrieveByDateDesc());
+        } else {
+            return ResponseEntity.ok(NoteService.retrieveByDateAsc());
+        }
+    }
+
+    @GetMapping("/note/retrieveByPrioritySorting/{sorting}")
+    public ResponseEntity<?> retrieveByPrioritySorting(@PathVariable("sorting") String sorting) {
+        if (sorting.equalsIgnoreCase("desc")) {
+            return ResponseEntity.ok(NoteService.retrieveByPriorityDesc());
+        } else {
+            return ResponseEntity.ok(NoteService.retrieveByPriorityAsc());
+        }
+    }
+
     @GetMapping("/note/retrieve/{keyword}")
     public ResponseEntity<?> search(@PathVariable String keyword) {
         List<Note> foundNotes = NoteService.searchNote(keyword);
         return ResponseEntity.ok(foundNotes);
+
+    }
+
+    @GetMapping("/note/retrieveByPriority/{priority}")
+    public ResponseEntity<?> retrieveByPriority(@PathVariable("priority") Priority priority) {
+        return ResponseEntity.ok(NoteService.findByPriority(priority));
 
     }
 

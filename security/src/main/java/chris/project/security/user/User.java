@@ -31,6 +31,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "user")
+
 public class User implements UserDetails {
 
     @Id

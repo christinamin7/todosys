@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import chris.project.security.note.entity.Note;
 import chris.project.security.note.model.NoteModel;
+import chris.project.security.note.model.Priority;
 import chris.project.security.note.repository.NoteRepository;
 import chris.project.security.user.User;
 
@@ -23,20 +24,17 @@ public class NoteServiceImpl implements NoteService {
     @Override
     public Note save(NoteModel noteModel) {
         try {
-            User user = new User();
             long id = loginUserId();
-            user.setId(id);
-
             Note note = Note.builder()
                     .title(noteModel.getTitle())
                     .description(noteModel.getDescription())
                     .priority(noteModel.getPriority())
-                    .user(user)
                     .build();
+            note.setUserId(id);
             noteRepository.save(note);
             return note;
         } catch (Exception e) {
-            throw new RuntimeException("An error occurred while saving the student.", e);
+            throw new RuntimeException("An error occurred while saving the note.", e);
         }
 
     }
@@ -52,10 +50,7 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public List<Note> searchNote(String keyword) {
-        List<Note> notes = noteRepository.findByTitleContainingIgnoreCase(keyword);
-        if (notes.isEmpty()) {
-
-        }
+        List<Note> notes = noteRepository.searchByKeyword(keyword);
         return notes;
     }
 
@@ -89,6 +84,34 @@ public class NoteServiceImpl implements NoteService {
         User userDetails = (User) authentication.getPrincipal();
         Long userId = userDetails.getId();
         return userId;
+    }
+
+    @Override
+    public List<Note> retrieveByDateAsc() {
+        return noteRepository.findAllByOrderByCreatedAtAsc();
+
+    }
+
+    @Override
+    public List<Note> retrieveByDateDesc() {
+        return noteRepository.findAllByOrderByCreatedAtDesc();
+
+    }
+
+    @Override
+    public List<Note> findByPriority(Priority priority) {
+        return noteRepository.findByPriority(priority);
+
+    }
+
+    @Override
+    public List<Note> retrieveByPriorityAsc() {
+        return noteRepository.findAllByOrderByCustomPriorityAsc();
+    }
+
+    @Override
+    public List<Note> retrieveByPriorityDesc() {
+        return noteRepository.findAllByOrderByPriorityDesc();
     }
 
 }

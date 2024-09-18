@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import chris.project.security.note.entity.Note;
 import chris.project.security.note.model.NoteModel;
+import chris.project.security.note.model.Priority;
 
 public interface NoteService {
 
@@ -14,10 +15,20 @@ public interface NoteService {
 
     Optional<Note> retrieveById(Long id);
 
+    List<Note> retrieveByDateAsc();
+
+    List<Note> retrieveByDateDesc();
+
     List<Note> searchNote(String keyword);
 
     Note update(Long id, NoteModel noteModel);
 
     String delete(long id);
+
+    List<Note> retrieveByPriorityAsc();
+
+    List<Note> retrieveByPriorityDesc();
+
+    List<Note> findByPriority(Priority priority);
 
 }
