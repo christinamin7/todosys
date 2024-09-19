@@ -63,7 +63,7 @@ public class NoteServiceImpl implements NoteService {
             note.setPriority(noteModel.getPriority());
             return noteRepository.save(note);
         } else {
-            throw new RuntimeException("Student not found with id " + id);
+            throw new RuntimeException("Note not found with id " + id);
         }
     }
 

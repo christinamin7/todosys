@@ -1,4 +1,6 @@
-package chris.project.security.auth;
+package chris.project.security.response;
+
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
+public class ErrorResponse {
 
-    private String token;
-
+    private Map<String, String> errors;
 }

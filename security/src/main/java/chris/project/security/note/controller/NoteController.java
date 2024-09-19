@@ -3,6 +3,7 @@ package chris.project.security.note.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,7 @@ public class NoteController {
     @PostMapping("/note/save")
     public ResponseEntity<?> create(@Valid @RequestBody NoteModel noteModel) {
         Note note = NoteService.save(noteModel);
-        return ResponseEntity.ok(note);
+        return ResponseEntity.ok("success");
     }
 
     @GetMapping("/note/retrieve")
@@ -82,13 +83,14 @@ public class NoteController {
     @PutMapping("/note/update/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody NoteModel noteModel) {
         Note note = NoteService.update(id, noteModel);
-        return ResponseEntity.ok(note);
+        return new ResponseEntity<>(note, HttpStatus.OK);
 
     }
 
     @DeleteMapping("/note/delete/{id}")
-    public String delete(@PathVariable("id") long id) {
-        return NoteService.delete(id);
+    public ResponseEntity<String> delete(@PathVariable("id") long id) {
+        NoteService.delete(id);
+        return new ResponseEntity<>("Deleted", HttpStatus.OK);
 
     }
 

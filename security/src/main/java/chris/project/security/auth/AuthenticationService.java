@@ -12,7 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import chris.project.security.config.JWTService;
-import chris.project.security.user.Role;
+import chris.project.security.token.Token;
+import chris.project.security.token.TokenRepository;
+import chris.project.security.token.TokenType;
 import chris.project.security.user.User;
 import chris.project.security.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,8 @@ public class AuthenticationService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JavaMailSender mailSender;
+    @Autowired
+    private TokenRepository tokenRepository;
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
@@ -39,11 +43,12 @@ public class AuthenticationService {
                 .lastName(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                //  .role(Role.USER)
                 .build();
         if (repository.findByEmail(request.getEmail()).isEmpty()) {
-            repository.save(user);
+            var savedUser = repository.save(user);
             var jwtToken = jwtService.generateToken(user);
+            saveUserToken(savedUser, jwtToken);
             return AuthenticationResponse.builder().token(jwtToken).build();
 
         } else {
@@ -57,7 +62,10 @@ public class AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
         sendEmail(request.getEmail());
+
         return AuthenticationResponse.builder().token(jwtToken).build();
 
     }
@@ -113,5 +121,28 @@ public class AuthenticationService {
             message = "User with email " + request.getEmail() + " not found";
         }
         return message;
+    }
+
+    private void saveUserToken(User user, String jwtToken) {
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
+    }
+
+    private void revokeAllUserTokens(User user) {
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        if (validUserTokens.isEmpty()) {
+            return;
+        }
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
     }
 }
