@@ -9,7 +9,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import chris.project.security.exception.UserNotFoundException;
 import chris.project.security.exception.ValidationException;
+import chris.project.security.response.AuthenticationResponse;
 import chris.project.security.response.ErrorResponse;
 
 @RestControllerAdvice
@@ -32,5 +34,10 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<AuthenticationResponse> handleUserNotFound(UserNotFoundException e) {
+        return ResponseEntity.badRequest().body(new AuthenticationResponse(e.getMessage()));
     }
 }

@@ -1,4 +1,4 @@
-package chris.project.security.auth;
+package chris.project.security.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

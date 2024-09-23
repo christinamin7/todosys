@@ -1,4 +1,4 @@
-package chris.project.security.auth;
+package chris.project.security.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

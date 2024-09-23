@@ -1,9 +1,11 @@
-package chris.project.security.user;
+package chris.project.security.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import chris.project.security.entity.User;
 
 @Repository
 

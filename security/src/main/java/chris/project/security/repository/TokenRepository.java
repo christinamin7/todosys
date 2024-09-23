@@ -1,10 +1,12 @@
-package chris.project.security.token;
+package chris.project.security.repository;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import chris.project.security.entity.Token;
 
 public interface TokenRepository extends JpaRepository<Token, Long> {
 

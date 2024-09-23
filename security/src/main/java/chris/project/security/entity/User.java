@@ -1,4 +1,4 @@
-package chris.project.security.user;
+package chris.project.security.entity;
 
 import java.util.Collection;
 import java.util.Date;
@@ -8,7 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import chris.project.security.token.Token;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -46,6 +47,9 @@ public class User implements UserDetails {
     private String profilePath;
     private String code;
 
+    @Column(name = "email_verified_at")
+    private Date email_verified_at;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_At", updatable = false)
     private Date created_At;
@@ -57,6 +61,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 

@@ -1,13 +1,16 @@
-package chris.project.security.note.repository;
+package chris.project.security.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import chris.project.security.note.entity.Note;
-import chris.project.security.note.model.Priority;
+import chris.project.security.constant.Priority;
+import chris.project.security.entity.Note;
+
+@Repository
 
 public interface NoteRepository extends JpaRepository<Note, Long> {
 

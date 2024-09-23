@@ -1,19 +1,19 @@
-package chris.project.security.note.service;
+package chris.project.security.service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import chris.project.security.note.entity.Note;
-import chris.project.security.note.model.NoteModel;
-import chris.project.security.note.model.Priority;
-import chris.project.security.note.repository.NoteRepository;
-import chris.project.security.user.User;
+import chris.project.security.constant.Priority;
+import chris.project.security.entity.Note;
+import chris.project.security.entity.User;
+import chris.project.security.exception.NoteNotFoundException;
+import chris.project.security.repository.NoteRepository;
+import chris.project.security.request.NoteModel;
 
 @Service
 public class NoteServiceImpl implements NoteService {
@@ -49,7 +49,8 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<Note> searchNote(String keyword) {
+    public List<Note> searchByKeyword(String keyword) {
+        long id = loginUserId();
         List<Note> notes = noteRepository.searchByKeyword(keyword);
         return notes;
     }
@@ -69,13 +70,21 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public String delete(long id) {
-        noteRepository.deleteById(id);
-        return "deleted successfully";
+        try {
+            if (!noteRepository.existsById(id)) {
+                return "Note with ID " + id + " not found";
+            }
+            noteRepository.deleteById(id);
+            return "Deleted successfully";
+        } catch (Exception e) {
+            return "An error occurred while deleting the note: " + e.getMessage();
+        }
     }
 
     @Override
-    public Optional<Note> retrieveById(Long id) {
-        return noteRepository.findById(id);
+    public Note retrieveById(Long id) {
+        return noteRepository.findById(id)
+                .orElseThrow(() -> new NoteNotFoundException("Note with ID " + id + " not found"));
     }
 
     public long loginUserId() {
@@ -88,30 +97,50 @@ public class NoteServiceImpl implements NoteService {
 
     @Override
     public List<Note> retrieveByDateAsc() {
-        return noteRepository.findAllByOrderByCreatedAtAsc();
-
+        try {
+            return noteRepository.findAllByOrderByCreatedAtAsc();
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while retrieving notes: " + e.getMessage());
+        }
     }
 
     @Override
     public List<Note> retrieveByDateDesc() {
-        return noteRepository.findAllByOrderByCreatedAtDesc();
+        try {
+            return noteRepository.findAllByOrderByCreatedAtDesc();
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while retrieving notes: " + e.getMessage());
+        }
 
     }
 
     @Override
     public List<Note> findByPriority(Priority priority) {
-        return noteRepository.findByPriority(priority);
+        try {
+            return noteRepository.findByPriority(priority);
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while retrieving notes: " + e.getMessage());
+        }
 
     }
 
     @Override
     public List<Note> retrieveByPriorityAsc() {
-        return noteRepository.findAllByOrderByCustomPriorityAsc();
+        try {
+            return noteRepository.findAllByOrderByCustomPriorityAsc();
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while retrieving notes: " + e.getMessage());
+        }
+
     }
 
     @Override
     public List<Note> retrieveByPriorityDesc() {
-        return noteRepository.findAllByOrderByPriorityDesc();
+        try {
+            return noteRepository.findAllByOrderByPriorityDesc();
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while retrieving notes: " + e.getMessage());
+        }
     }
 
 }

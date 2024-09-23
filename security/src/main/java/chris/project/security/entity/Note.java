@@ -1,9 +1,9 @@
-package chris.project.security.note.entity;
+package chris.project.security.entity;
 
 import java.util.Date;
 
-import chris.project.security.note.model.Priority;
-import chris.project.security.user.User;
+import chris.project.security.constant.Priority;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -30,8 +30,11 @@ public class Note {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "title")
     private String title;
+    @Column(name = "description")
     private String description;
     @Enumerated(EnumType.STRING)
     private Priority priority;

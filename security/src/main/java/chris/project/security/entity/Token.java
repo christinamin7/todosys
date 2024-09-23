@@ -1,6 +1,6 @@
-package chris.project.security.token;
+package chris.project.security.entity;
 
-import chris.project.security.user.User;
+import chris.project.security.constant.TokenType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

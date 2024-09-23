@@ -1,4 +1,4 @@
-package chris.project.security.note.model;
+package chris.project.security.constant;
 
 public enum Priority {
     LOW,
