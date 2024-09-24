@@ -28,6 +28,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private FileUploadService fileUploadService;
+
     public String codeResend(CodeResendRequest request) {
         try {
             Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
@@ -102,22 +105,18 @@ public class UserService {
     }
 
     public String updateUserProfile(UserProfileRequest request) {
-        try {
-            String message = "";
-            Optional<User> existUser = userRepository.findByEmail(request.getEmail());
-            if (existUser.isPresent()) {
-                var updateUser = existUser.get();
-                updateUser.setProfilePath(request.getProfile());
-                userRepository.save(updateUser);
-                message = "update successful";
-            } else {
-                message = "user not found with " + request.getEmail();
+        String message = "";
+        Optional<User> existUser = userRepository.findByEmail(request.getEmail());
+        if (existUser.isPresent()) {
+            var updateUser = existUser.get();
+            String filePath = fileUploadService.uploadImage(request.getProfilePath(), "user");
+            updateUser.setProfilePath(filePath);
+            userRepository.save(updateUser);
+        } else {
+            message = "user not found with " + request.getEmail();
 
-            }
-            return message;
-        } catch (Exception e) {
-            throw new RuntimeException("Service error: " + e.getMessage());
         }
+        return message;
 
     }
 

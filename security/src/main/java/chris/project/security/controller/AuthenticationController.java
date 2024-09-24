@@ -28,22 +28,13 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegisterRequest request) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(service.register(request));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new AuthenticationResponse("An error occoured " + e.getMessage()));
-        }
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.register(request));
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest request) {
-        try {
-            return ResponseEntity.ok(service.authenticate(request));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new AuthenticationResponse("An error occoured " + e.getMessage()));
-
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.authenticate(request));
     }
 
     @PostMapping("/codeVerify")

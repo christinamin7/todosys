@@ -18,7 +18,6 @@ import chris.project.security.config.JWTService;
 import chris.project.security.constant.TokenType;
 import chris.project.security.entity.Token;
 import chris.project.security.entity.User;
-import chris.project.security.exception.UserNotFoundException;
 import chris.project.security.exception.ValidationException;
 import chris.project.security.repository.TokenRepository;
 import chris.project.security.repository.UserRepository;
@@ -66,22 +65,27 @@ public class AuthenticationService {
             sendEmail(request.getEmail(), "login");
             return AuthenticationResponse.builder().token(jwtToken).build();
         } else {
-            errors.put("email", "User already exist!");
+            errors.put("User-exist", "User already exist!");
             throw new ValidationException(errors);
         }
 
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + request.getEmail()));
-        var jwtToken = jwtService.generateToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
-        sendEmail(request.getEmail(), "login");
-        return AuthenticationResponse.builder().token(jwtToken).build();
+        Map<String, String> errors = new HashMap<String, String>();
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+            var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+            var jwtToken = jwtService.generateToken(user);
+            revokeAllUserTokens(user);
+            saveUserToken(user, jwtToken);
+            sendEmail(request.getEmail(), "login");
+            return AuthenticationResponse.builder().token(jwtToken).build();
 
+        } catch (ValidationException e) {
+            errors.put("email", "User already exist!");
+            throw new ValidationException(errors);
+        }
     }
 // send email to user
 

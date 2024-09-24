@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/todosys
     username: root
-    password:
+    password: # Add your database password here
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -18,10 +18,25 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: christinamin.ucsp@gmail.com
-    password: mlxj pooi tfqg pyjj
+    password: mlxj pooi tfqg pyjj # Secure this password
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+
+cloud:
+  aws:
+    credentials:
+      accessKey: AKIATW5MNLLA2FLDZEHU #  AWS Access Key
+      secretKey: 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 # AWS Secret Key
+    region:
+      static: ap-southeast-2
+aws:
+  s3:
+    bucketName: demotodoappbucket
