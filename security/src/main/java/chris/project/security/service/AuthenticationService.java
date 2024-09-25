@@ -159,6 +159,8 @@ public class AuthenticationService {
                 user.setCode(null);
                 userRepository.save(user);
                 message = "Email verified successfully!";
+            } else {
+                message = "Invalid code";
             }
         } else {
             message = "User with email " + request.getEmail() + " not found";

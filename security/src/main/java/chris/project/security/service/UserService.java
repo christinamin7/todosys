@@ -112,6 +112,7 @@ public class UserService {
             String filePath = fileUploadService.uploadImage(request.getProfilePath(), "user");
             updateUser.setProfilePath(filePath);
             userRepository.save(updateUser);
+            message = "Saved successfully";
         } else {
             message = "user not found with " + request.getEmail();
 
